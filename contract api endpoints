@@ -1,0 +1,5 @@
+https://api.spacetraders.io/v2/my/contracts
+https://api.spacetraders.io/v2/my/contracts/{contractId}
+https://api.spacetraders.io/v2/my/contracts/{contractId}/accept
+https://api.spacetraders.io/v2/my/contracts/{contractId}/deliver
+https://api.spacetraders.io/v2/my/contracts/{contractId}/fulfill
