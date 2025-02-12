@@ -457,40 +457,30 @@ def refresh_leaderboard(*args):
         
         
         
-        
-        
+ # Function to refresh factions tab
 def refresh_factions(*args):
     try:
         response = requests.get(
-            API_STATUS,
-            params={"token": player_token.get()},
+            LIST_FACTIONS,
+            headers={"Authorization": f"Bearer {player_token.get()}"},
             proxies=proxies,
         )
         if response.status_code == 200:
             result = response.json()
-            credits_leaderboard_view.delete(*credits_leaderboard_view.get_children())
-            for rank, row in enumerate(result["leaderboards"]["mostCredits"]):
-                credits_leaderboard_view.insert(
+            factions_view.delete(*factions_view.get_children())  # Clear old data
+
+            for row in result["data"]:
+                factions_view.insert(
                     "",
                     "end",
-                    text="values",
-                    values=(rank + 1, row["agentSymbol"], f"{row['credits']:n}"),
+                    values=(row["symbol"], row["name"]),
                 )
-
-            charts_leaderboard_view.delete(*charts_leaderboard_view.get_children())
-            for rank, row in enumerate(result["leaderboards"]["mostSubmittedCharts"]):
-                charts_leaderboard_view.insert(
-                    "",
-                    "end",
-                    text="values",
-                    values=(rank + 1, row["agentSymbol"], f"{row['chartCount']:n}"),
-                )
-
         else:
             print("Failed:", response.status_code, response.reason, response.text)
 
-    except ConnectionError as ce:
+    except requests.ConnectionError as ce:
         print("Failed:", ce)
+
 
 
 ###
@@ -754,15 +744,15 @@ leaderboard.rowconfigure((0, 1), weight=1)
 
 
 ###
-# 
+# Displaying Factions
 #
 
 
 factions_view = ttk.Treeview(
     factions, height=6, columns=("symbol", "name"), show="headings"
 )
-factions_view.column("symbol", anchor=tk.CENTER, width=100)
-factions_view.column("name", anchor=tk.W, width=100)
+factions_view.column("symbol", anchor=tk.CENTER, width=200)
+factions_view.column("name", anchor=tk.W, width=200)
 factions_view.heading("#1", text="symbol")
 factions_view.heading("#2", text="name")
 factions_view.grid(sticky=tk.NSEW)
